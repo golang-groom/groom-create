@@ -4,7 +4,7 @@ import (
 	_ "embed"
 	"path/filepath"
 
-	"github.com/pspiagicw/groom-create/pkg/log"
+	"github.com/pspiagicw/colorlog"
 )
 
 // Template for the Makefile
@@ -21,7 +21,7 @@ var mainFileTemplateStringDefault string
 // Creates a Basic Profile
 type BasicProfileCreator struct {
 	Template *ProjectTemplate
-	Log      log.Logger
+	Log      colorlog.ColorLogger
 }
 
 func (d *BasicProfileCreator) GetProjectName() string {

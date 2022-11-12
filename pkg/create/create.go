@@ -1,12 +1,11 @@
 // Package creates projects.
 package create
-
 import (
 	"os"
 	"path"
 
+	"github.com/pspiagicw/colorlog"
 	"github.com/pspiagicw/groom-create/pkg/execute"
-	"github.com/pspiagicw/groom-create/pkg/log"
 	profile "github.com/pspiagicw/groom-create/pkg/profiles"
 )
 
@@ -14,8 +13,8 @@ import (
 // Reduces amount of code
 type ProjectCreator struct {
 	Profile  *string
-	Verbose  *bool
-	Log      log.Logger
+	Verbose  bool
+	Log      colorlog.ColorLogger
 	URL      string
 	projName string
 }
@@ -41,20 +40,22 @@ Then for the profile, creates a instance of the corresponding struct.
 func (c *ProjectCreator) CreateProject() {
 	c.projName = path.Base(c.URL)
 
-	c.preProfileProcessing()
-
 	profileCreator := c.getProfileCreator()
 
 	if profileCreator != nil {
+		c.preProfileProcessing()
 		profileCreator.CreateProfile()
 	} else {
-		c.Log.LogFatalf("Project %s, does not exist!", *c.Profile)
+		c.Log.LogFatal("Profile %s, does not exist!", *c.Profile)
 	}
 
 	c.Log.LogSuccess("Successfully created project")
 }
 
 // Does preprocessing before profile activated.
+// Currently it does the following
+// - Makes the Project Directory
+// - Initializes Golang Modules using `go mod init [PROJECT_URL]`
 func (c *ProjectCreator) preProfileProcessing() {
 
 	c.makeProjectDirectory()
@@ -70,6 +71,8 @@ func (c *ProjectCreator) getProfileCreator() profile.ProfileCreator {
 		return &profile.BasicProfileCreator{Template: &profile.ProjectTemplate{ProjName: c.projName, ProjURL: c.URL}, Log: c.Log}
 	} else if *c.Profile == "cmd" {
 		return &profile.CMDProfileCreator{Template: &profile.ProjectTemplate{ProjName: c.projName, ProjURL: c.URL}, Log: c.Log}
+    } else if *c.Profile == "lib" {
+		return &profile.LIBProfileCreator{Template: &profile.ProjectTemplate{ProjName: c.projName, ProjURL: c.URL}, Log: c.Log}
 	} else {
 		return nil
 	}
@@ -83,10 +86,10 @@ func (c *ProjectCreator) goModInit() {
 	out, err := execute.Execute(c.Log, "go", arguments, c.projName)
 
 	if err != nil {
-		c.Log.LogFatalf("Error Initializing Go modules: %v", err)
+		c.Log.LogFatal("Error Initializing Go modules: %v", err)
 	}
 
-	c.Log.LogStep(out)
+	c.Log.LogInfo(out)
 }
 
 // Function creates the project directory
@@ -94,7 +97,7 @@ func (c *ProjectCreator) makeProjectDirectory() {
 	err := os.Mkdir(c.projName, 0755)
 
 	if err != nil {
-		c.Log.LogFatalf("Can't create directory '%s' , error %q", err)
+		c.Log.LogFatal("Can't create directory '%s' , error %q", err)
 	}
 
 	c.Log.LogSuccess("Successfully created directory: %s", c.projName)

@@ -2,7 +2,10 @@ module github.com/pspiagicw/groom-create
 
 go 1.18
 
-require github.com/fatih/color v1.13.0
+require (
+	github.com/fatih/color v1.13.0
+	github.com/pspiagicw/colorlog v0.0.0-20221107082154-c17db98981f5
+)
 
 require (
 	github.com/mattn/go-colorable v0.1.9 // indirect

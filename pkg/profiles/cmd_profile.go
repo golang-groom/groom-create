@@ -2,9 +2,10 @@ package profile
 
 import (
 	_ "embed"
-	"github.com/pspiagicw/groom-create/pkg/log"
 	"os"
 	"path/filepath"
+
+	"github.com/pspiagicw/colorlog"
 )
 
 //go:embed data/cmd/pkgfile
@@ -18,7 +19,7 @@ var makeFileTemplateStringCMD string
 
 type CMDProfileCreator struct {
 	Template *ProjectTemplate
-	Log      log.Logger
+	Log      colorlog.ColorLogger
 }
 
 func (c *CMDProfileCreator) GetProjectName() string {
@@ -44,7 +45,7 @@ func (c *CMDProfileCreator) createPkgFile() {
 
 	err := os.MkdirAll(pkgFilePath, 0755)
 	if err != nil {
-		c.Log.LogFatalf("Error creating directory '%s' and it's subdirectories", pkgFilePath)
+		c.Log.LogFatal("Error creating directory '%s' and it's subdirectories", pkgFilePath)
 	}
 
 	pkgFilePath = filepath.Join(pkgFilePath, "simple.go")
@@ -64,7 +65,7 @@ func (c *CMDProfileCreator) createMainFile() {
 
 	err := os.MkdirAll(mainFilePath, 0755)
 	if err != nil {
-		c.Log.LogFatalf("Error creating directory '%s' and it's subdirectories", mainFilePath)
+		c.Log.LogFatal("Error creating directory '%s' and it's subdirectories", mainFilePath)
 	}
 	mainFilePath = filepath.Join(mainFilePath, "main.go")
 

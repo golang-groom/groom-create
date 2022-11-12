@@ -7,4 +7,7 @@ test:
 	go test -v ./...
 format:
 	go fmt ./...
-.PHONY: build test format
+install: build
+	install -m 755 ${PROJNAME} ~/.local/bin/${PROJNAME}
+
+.PHONY: build test format install

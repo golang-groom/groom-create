@@ -3,9 +3,10 @@ package profile
 
 import (
 	"bytes"
-	"github.com/pspiagicw/groom-create/pkg/log"
 	"os"
 	"text/template"
+
+	"github.com/pspiagicw/colorlog"
 )
 
 /*
@@ -33,11 +34,11 @@ type ProjectTemplate struct {
 
 // Helper Functions to write a file.
 // Automatically logs result.
-func writeFile(log log.Logger, filename string, contents string) {
+func writeFile(log colorlog.ColorLogger, filename string, contents string) {
 	err := os.WriteFile(filename, []byte(contents), 0644)
 
 	if err != nil {
-		log.LogFatalf("Cannot create '%s' , %q", filename, err)
+		log.LogFatal("Cannot create '%s' , %q", filename, err)
 	} else {
 		log.LogSuccess("Successfully written '%s'", filename)
 	}
@@ -47,18 +48,18 @@ func writeFile(log log.Logger, filename string, contents string) {
 // Helper function to populate Makefiles.
 // Takes MakefileTemplate and Template String.
 // Logs the result
-func populateTemplate(log log.Logger, templateString string, generator *ProjectTemplate) string {
-	makefileTemplate, err := template.New("Makefile").Parse(templateString)
+func populateTemplate(log colorlog.ColorLogger, templateString string, generator *ProjectTemplate) string {
+	templateContents, err := template.New("fileTemplate").Parse(templateString)
 	if err != nil {
-		log.LogFatalf("Failed to parse template %q", err)
+		log.LogFatal("Failed to parse template %q", err)
 	}
 
 	var output bytes.Buffer
 
-	err = makefileTemplate.Execute(&output, generator)
+	err = templateContents.Execute(&output, generator)
 
 	if err != nil {
-		log.LogFatalf("Unable to execute template %q", err)
+		log.LogFatal("Unable to execute template %q", err)
 	}
 
 	return output.String()

@@ -1,55 +1,28 @@
-# Box
+# Groom Create
 
-Box is to Go what `crate` is to Rust.
+This is a subproject of the main project [Groom]().
 
-It provides quality of life features missing currenly in `go` binary.
-
-## Features
-
-- Create multiple projects.
-- Automatic Makefile generation
-- Automatic Extract documentation
-- Setup tests.
-
-## Prequisites
-- Git 
-- Bash
-- Go
-
-`box` generates a Makefile. To use it install `make`.
+Handles project creation in Golang with ease.
 
 ## Usage
 
-```txt
-Usage of box:
-box [OPTIONS] [NAME]
-  -profile string
-    	Profile to use while creating a project (default "default")
+```sh
+groom create [PROJECT_URL]
 ```
 
-Using `box` is simple.
-```sh
-$ box <project-name>
-```
+For example, creating this project.
 
-Or 
 ```sh
-$ box -profile <profile> <project-name>
+groom create github.com/golang-groom/groom-create
 ```
+This would create a directory `groom-create` and populate it with the default profile.
 
 ## Profiles
 
-- Simple
-- CLI Application
+You can specify the profile type using `-profile`.
 
-## Roadmap
+Currently the following profiles are available
 
-- [ ] Git Init support
-- [ ] Add more types of applications
-    - Web API
-    - Microservices
-- [ ] Integrate subcommands like `cargo` does. Example `box-deb` should have support for making deb files.
-- [ ] Provide `release` subcommand. Thus `box release` should compile for multiple architectures.
-- [ ] Handle global package management. Provide `box install/remove` commands.
-- [ ] Generate `documentation`.
-
+- basic (`-profile basic`). Very basic golang project template.
+- cmd (`-profile cmd`). A cli-based application project template.
+- lib (`-profile lib`). A library for golang projects.

@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/pspiagicw/colorlog"
 	"github.com/pspiagicw/groom-create/pkg/create"
-	"github.com/pspiagicw/groom-create/pkg/log"
 )
 
 // Function to define flags and parse them
@@ -16,31 +16,30 @@ func ParseAndRun() {
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
 
-		fmt.Fprintf(os.Stderr, "groom [OPTIONS] [NAME] \n")
+		fmt.Fprintf(os.Stderr, "groom create [OPTIONS] [NAME] \n")
 
 		flag.PrintDefaults()
 
 	}
 
-	verbose := flag.Bool("verbose", false, "Whether to log verbosely")
 	profile := flag.String("profile", "basic", "Profile to use while creating a project")
 
 	flag.Parse()
 
 	// Default Logger
-	logger := &log.DefaultLogger{}
+	logger := &colorlog.DefaultColorLogger{}
 
 	url := flag.Arg(0)
 	if url != "" {
 		creator := &create.ProjectCreator{
 			Profile: profile,
-			Verbose: verbose,
+			Verbose: false,
 			Log:     logger,
 			URL:     url,
 		}
 		creator.CreateProject()
 	} else {
 		flag.Usage()
-		logger.LogFatalf("Empty project name provided")
+		logger.LogFatal("Empty project name provided")
 	}
 }
